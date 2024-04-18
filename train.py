@@ -22,11 +22,10 @@ def get_default_device():
   """
   if torch.cuda.is_available():
     # Check for multiple GPUs and choose the first one
-    device_count = torch.cuda.device_count()
-    if device_count > 1:
-      print(f"Using {device_count} GPUs for training.")
-      return torch.device('cuda:0')  # Use the first GPU
-    else:
+    # device_count = torch.cuda.device_count()
+    # if device_count > 1:
+    #   print(f"Using {device_count} GPUs for training.")
+    #   return torch.device('cuda:0')  # Use the first GPU
       print("Using single GPU for training.")
       return torch.device('cuda')
   else:
