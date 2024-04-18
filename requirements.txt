@@ -1,0 +1,11 @@
+torch
+trochvision
+transformers
+timm
+argparse
+random
+matplotlib
+numpy
+pillow
+datasets
+tqdm
