@@ -34,7 +34,7 @@ def get_default_device():
     return torch.device('cpu')
 
 IMAGE_SIZE = 224
-BATCH_SIZE = 4
+BATCH_SIZE = 2
 DEVICE = get_default_device()
 LEARNING_RATE = 0.005
 EPOCHS = 10
@@ -53,7 +53,7 @@ def get_train_dataset(triplets, labels, IMAGE_SIZE=224):
     return train_dataset
 
 def main(triplets,images,IMAGE_SIZE = 224,
-BATCH_SIZE = 32,
+BATCH_SIZE = 4,
 DEVICE = get_default_device(),
 LEARNING_RATE = 0.005,
 EPOCHS = 10):
