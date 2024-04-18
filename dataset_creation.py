@@ -1,6 +1,7 @@
 import random
 from tqdm import tqdm
 from torch.utils.data import Dataset
+import numpy as np
 import torchvision.transforms as transforms
 
 def triplet_dataset(images, labels):
