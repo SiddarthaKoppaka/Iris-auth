@@ -1,41 +1,31 @@
 import random
 from tqdm import tqdm
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import torchvision.transforms as transforms
-import numpy as np
-import torch.nn as nn
-import torch
 
 def triplet_dataset(images, labels):
-  """
-  Creates triplets for a triplet loss from provided images and labels.
+    label_to_indices = {label: np.where(labels == label)[0] for label in set(labels)}
+    triplets = []
 
-  Args:
-      images: A list of images.
-      labels: A list of labels corresponding to the images.
+    for i, label_anchor in tqdm(enumerate(labels), total=len(labels), desc="Creating triplets"):
+        anchor = images[i]
+        positive_indices = label_to_indices[label_anchor]
+        positive_indices = positive_indices[positive_indices != i]
 
-  Returns:
-      A tuple containing two lists: triplets and labels.
-          - triplets: A list of dictionaries with keys 'anchor', 'positive', and 'negative'.
-          - labels: The original list of labels.
-  """
-  triplets = []
+        if len(positive_indices) == 0:
+            continue  # skip if no valid positive sample found
 
-  for i, label_anchor in tqdm(enumerate(labels), total=len(labels), desc="Creating triplets"):
-    anchor = images[i]
-    positive_indices = [j for j in range(len(labels)) if labels[j] == label_anchor and j != i]
+        negative_indices = np.array([idx for idx in range(len(labels)) if labels[idx] != label_anchor])
+        positive = images[random.choice(positive_indices)]
+        negative = images[random.choice(negative_indices)]
 
-    # Check if there's at least one positive image
-    if positive_indices:
-      positive = images[random.choice(positive_indices)]
-      negative = random.choice([images[j] for j in range(len(labels)) if j not in (i, *positive_indices)])
-      triplets.append({
-          'anchor': anchor,
-          'positive': positive,
-          'negative': negative
-      })
+        triplets.append({
+            'anchor': anchor,
+            'positive': positive,
+            'negative': negative
+        })
 
-  return triplets, labels
+    return triplets, labels
 
 
 class TripletDataset(Dataset):
@@ -48,30 +38,14 @@ class TripletDataset(Dataset):
         return len(self.triplets)
 
     def __getitem__(self, idx):
-        # Retrieve each image data from the triplet
         anchor = self.triplets[idx]['anchor']
         positive = self.triplets[idx]['positive']
         negative = self.triplets[idx]['negative']
         
-        # Apply the transformation if any
         if self.transform:
             anchor = self.transform(anchor)
             positive = self.transform(positive)
             negative = self.transform(negative)
         
-        label = self.labels[idx]
-        
-        return anchor, positive, negative, label
-    
+        return anchor, positive, negative
 
-class TripletLoss(nn.Module):
-    def __init__(self, margin=1.0):
-        super(TripletLoss, self).__init__()
-        self.margin = margin
-    def calc_euclidean(self, x1, x2):
-        return (x1 - x2).pow(2).sum(1)
-    def forward(self, anchor: torch.Tensor, positive: torch.Tensor, negative: torch.Tensor) -> torch.Tensor:
-        distance_positive = self.calc_euclidean(anchor, positive)
-        distance_negative = self.calc_euclidean(anchor, negative)
-        losses = torch.relu(distance_positive - distance_negative + self.margin)
-        return losses.mean()
