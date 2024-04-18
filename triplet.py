@@ -20,7 +20,7 @@ class ViT_Triplet(nn.Module):
     def __init__(self, pretrained=True):
         super().__init__()
         # Load a pretrained Vision Transformer model
-        self.Feature_Extractor = vit_b_16(weights:ViT_B_16_Weights.IMAGENET1K_V1)
+        self.Feature_Extractor = vit_b_16(weights='DEFAULT')
         num_filters = self.Feature_Extractor.heads[0].in_features  # Access the in_features of the ViT head
 
         # Replace the head of the ViT model with a new sequence of layers
