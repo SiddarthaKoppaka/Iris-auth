@@ -34,7 +34,7 @@ def get_default_device():
     return torch.device('cpu')
 
 IMAGE_SIZE = 224
-BATCH_SIZE = 32
+BATCH_SIZE = 4
 DEVICE = get_default_device()
 LEARNING_RATE = 0.005
 EPOCHS = 10
