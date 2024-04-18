@@ -8,7 +8,7 @@ import torch.nn.functional as F
 import zipfile
 import matplotlib.pyplot as plt
 import numpy as np
-from tqdm.notebook import tqdm
+from tqdm import tqdm
 import dataset_creation as dc
 import load_and_preprocess as p
 import triplet
