@@ -57,7 +57,7 @@ BATCH_SIZE = 32,
 DEVICE = get_default_device(),
 LEARNING_RATE = 0.005,
 EPOCHS = 10):
-    train_dataset = get_train_dataset(IMAGE_SIZE = IMAGE_SIZE)
+    train_dataset = get_train_dataset(train_triplets, train_labels,IMAGE_SIZE = IMAGE_SIZE)
     train_dl = DataLoader(train_dataset,batch_size=BATCH_SIZE,shuffle=True,num_workers=2,pin_memory=True)
     vit = triplet.ViT_Triplet()
     vit = vit.to(DEVICE)
