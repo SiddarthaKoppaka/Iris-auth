@@ -3,7 +3,6 @@ torchvision
 transformers
 timm
 argparse
-random
 matplotlib
 numpy
 pillow
